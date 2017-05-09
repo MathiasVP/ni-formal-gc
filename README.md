@@ -144,7 +144,7 @@ properties hold
     ```
   + Γ contains only wellformed types.
     ```coq
-    ∀ τ x, Γ x = Some τ -> wf_type bot τ`
+    ∀ τ x, Γ x = Some τ -> wf_type bot τ
     ```
   + Every value in `m` has a type.
     ```coq
@@ -179,10 +179,10 @@ properties hold
     ```coq
     ∀ loc ℓ μ,
       heap_lookup loc h = Some (ℓ, μ) ->
-      ∃ τ, env loc = Some τ`
+      ∃ τ, env loc = Some τ
     ```
 - Memory `m` and heap `h` are consistent.
-  + If `Γ x` is type `Array t ℓ and `x` has the value `loc` in `m`, then `Σ loc` is type `t`.
+  + If `Γ x` is type `Array t ℓ` and `x` has the value `loc` in `m`, then `Σ loc` is type `t`.
     ```coq
     ∀ x t ε ℓ loc,
       Γ x = Some (SecType (Array t ℓ) ε) ->
@@ -365,8 +365,8 @@ Lemma preservation:
 ### Noninterference
 
 The file `nibridge_helper.v` contains various required technical results. Most
-importantly is the definition of the invariants used for the technical
-non-interference theorem presented:
+importantly, the definition of the invariants used for the technical
+non-interference theorem is presented:
 
 ```coq
 Definition ni_bridge (n1: nat) (ℓ: level_proj1): Prop :=
@@ -412,8 +412,8 @@ derivation `⟨c, pc, m1, h1, t⟩ ↷ [ℓ, Γ, Σ1, Σ1', ev1, n1] ⟨c2, pc1'
 t2⟩`. Both case `n = 0` and case `n > 0` is proved by structural induction in
 `c`.
 
-The proof using an interesting technique which related three configurations
-instead of the usual two configurations. The reason this is done stems from the
+The proof using an interesting technique which relates three configurations
+instead of the usual two configurations. The reason stems from the
 fact that our definition of non-interference is possibilistic. That is, given
 two terminating configurations we can construct another terminating
 configuration.
