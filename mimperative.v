@@ -351,6 +351,7 @@ Module Imperative (L: Lattice) (M: Memory L).
     super_destruct.
     eapply reach_from_implies_reach; eauto.
   Qed.
+  Hint Resolve reach_extend_with_num.
   
   Lemma reach_from_extend:
     forall x y z loc1 loc2 m h,
@@ -709,9 +710,9 @@ Lemma heap_level_bound_proj3:
     do 2 specialize_gen.
     invert_wt_cmd.
     invert_step.
-    invert_wt_cmd.
-    invert_wt_cmd.
-  Qed.  
+    invert_wt_stop.
+    invert_wt_stop.
+  Qed.
   Hint Resolve step_if_does_not_step_to_stop.
 
   Lemma wellformed_timeless:

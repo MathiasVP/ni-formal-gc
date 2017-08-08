@@ -210,6 +210,7 @@ Proof.
   super_destruct.
   eexists.
   dependent induction H0; eauto.
+  specialize_gen; eauto.
 Qed.
 Hint Resolve reach_from_supset.
 
@@ -282,9 +283,9 @@ Lemma reach_by_update_implies_reach_if:
     reach m h loc2.
 Proof.
   intros.
-  dependent induction H.
-  - eauto.
+  dependent induction H; eauto.
   - specialize_gen.
+    specialize (IHreach _ _ _ eq_refl).
     destruct (decide (loc = l)); subst.
     + assert (exists ν, heap_lookup l h = Some (ℓ, ν) /\ μ = update_lookup ν n (ValLoc loc1))
         by eauto.

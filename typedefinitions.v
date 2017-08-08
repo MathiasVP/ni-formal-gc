@@ -412,6 +412,11 @@ Ltac invert_wt_cmd :=
   match goal with [H: context[wt_aux] |- _] => inverts H
   end.
 
+Ltac invert_wt_stop :=
+  match goal with
+    [H: wt_aux _ _ Stop _ |- _] => inverts H
+  end.
+
 Ltac invert_lifted :=
   repeat match goal with
          | [H: context[lifted] |- _] => inverts H

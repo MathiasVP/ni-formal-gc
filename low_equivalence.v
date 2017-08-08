@@ -305,12 +305,12 @@ Qed.
       low_reach ℓ Γ Σ m h loc.
   Proof.
     intros.
-    dependent induction H; eauto 2.
+    dependent induction H; eauto.
     destruct (decide (x = x0)); subst.
     - rewrite -> extend_memory_lookup_eq in *.
       discriminate.
     - rewrite -> extend_memory_lookup_neq in * by solve[eauto].
-      eauto.
+      now eauto.
   Qed.
 
   Lemma wf_bijection_proj1:
@@ -1129,7 +1129,7 @@ Qed.
         * rewrite -> lookup_update_neq in * by solve[eauto].
           eauto 3.
       + rewrite -> heap_lookup_update_neq in * by solve[eauto].
-        eauto 2.
+        eauto.
   Qed.
   
   Lemma low_reach_update_implies_low_reach_if:
@@ -1318,12 +1318,13 @@ Qed.
     intros.
     unfold reach_from in * |-.
     super_destruct.
-    dependent induction H0; eauto.
+    dependent induction H0; [eauto |].
+    specialize (IHidx_reach_from _ _ H eq_refl).
     destruct (heap_lookup loc h2) eqn:H_loc.
     - destruct p.
       assert (~ reach m ([h1 ⊎ h2, H]) loc) by eauto.
       contradict H4; eauto.
-    - specialize_gen.
+    - repeat specialize_gen.
       assert (heap_lookup loc h1 = Some (ℓ, μ)).
       {
         rewrite -> disjoint_union_sym in * by solve[eauto].
@@ -1333,7 +1334,6 @@ Qed.
       super_destruct.
       eauto.
   Qed.
-
 
   Lemma reach_supset_if:
     forall m h1 h2 loc H,
@@ -1447,7 +1447,7 @@ Qed.
   Proof.
     intros.
     dependent induction H0; eauto.
-    specialize_gen.
+    specialize (IHlow_reach _ _ H eq_refl).
     super_destruct.
     assert (heap_lookup loc1 h1 = Some (ℓ, μ) \/ heap_lookup loc1 h2 = Some (ℓ, μ)).
     {

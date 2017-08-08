@@ -1840,7 +1840,7 @@ Proof.
             intro.
             unfold is_stop_config, cmd_of in *; subst.
             invert_wf_aux.
-            do 2 specialize_gen.
+            repeat specialize_gen.
             invert_wt_cmd.
             invert_wt_stop.
           }
@@ -1848,7 +1848,7 @@ Proof.
             intro.
             unfold is_timeout_config, cmd_of in *; subst.
             invert_wf_aux.
-            do 2 specialize_gen.
+            repeat specialize_gen.
             invert_wt_cmd.
             invert_wt_timeout.
           }
@@ -1908,12 +1908,12 @@ Proof.
     assert (c1 <> Stop).
     {
       intro; subst.
-      invert_wt_cmd.
+      invert_wt_stop.
     }
     assert (c2 <> Stop).
     {
       intro; subst.
-      invert_wt_cmd.
+      invert_wt_stop.
     }
     invert_high_event_step.
     + invert_event_step.
@@ -1955,7 +1955,7 @@ Proof.
             {
               intro; subst.
               invert_wf_aux.
-              do 2 specialize_gen.
+              repeat specialize_gen.
               invert_wt_cmd.
               invert_wt_stop.
             }
@@ -1963,7 +1963,7 @@ Proof.
             {
               intro; subst.
               invert_wf_aux.
-              do 2 specialize_gen.
+              repeat specialize_gen.
               invert_wt_cmd.
               invert_wt_timeout.
             }
@@ -2095,8 +2095,7 @@ Lemma reach_update_implies_reach_if:
     reach m h loc2.
 Proof.
   intros.
-  dependent induction H.
-  - eauto.
+  dependent induction H; eauto.
   - assert (reach m h loc) by eauto.
     clear IHreach.
     destruct (decide (loc1 = loc)); subst.
@@ -2117,6 +2116,7 @@ Proof.
       eauto 2.
 
       Unshelve.
+      * repeat constructor.
       * repeat constructor.
 Qed.
 Hint Resolve reach_update_implies_reach_if.

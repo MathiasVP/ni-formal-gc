@@ -65,7 +65,7 @@ Ltac destruct_exists :=
 Ltac specialize_gen:=
   match goal with
   | [  H  : ?F -> _ ,
-            H' : ?F |- _] =>
+       H' : ?F |- _] =>
     specialize (H H')
   | [ H : ?X = ?X -> _ |- _ ] =>
     let h := fresh "H"
@@ -75,7 +75,7 @@ Ltac specialize_gen:=
     clear h
   | [H : ?X <> ?Y -> _ |- _] =>
     let h := fresh "H"
-    in assert (X <> Y) as h by (intro H_absurd; discriminate H_absurd);
+    in assert (X <> Y) as h by (let a := fresh "A" in intro a; discriminate a);
        specialize (H h); clear h
   end.
 
