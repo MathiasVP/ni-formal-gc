@@ -1,5 +1,6 @@
 # ni-formal-gc
 Coq formalization of timing-sensitive noninterference for a garbage collected language with heap and runtime pc level.
+Currently compiles with version 8.5pl1.
 
 The top-level termination-insensitive non-interference theorem is found in `ni.v`:
 
