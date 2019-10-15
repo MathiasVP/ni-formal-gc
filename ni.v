@@ -367,7 +367,7 @@ Module NI (L : Lattice) (M: Memory L).
             destruct ℓ as [ℓ ι].
             splits; try congruence.
             exists (NewEvent ℓ i l1) Stop pc''
-              (m [i → ValLoc l1]) (extend_heap l1 l n0 v h);
+              (m [i → ValLoc l1]) (extend_heap v l1 l n0 h H1 H2);
             exists (S t) 0 (extend_stenv l1 τ Σ).
             splits*; try omega.
             destruct (flowsto_dec ℓ ℓ_adv).
@@ -435,12 +435,12 @@ Module NI (L : Lattice) (M: Memory L).
         * invert_step.
           {
             invert_step_many_num; try solve[invert_step; exfalso; eauto 2].
-            destruct t0 as [σ [ℓ ι]].
+            destruct t0 as [σ [ℓ0 ι]].
             splits; try congruence.
-            exists (GetEvent ℓ i i0 v) Stop pc'' (m [i → v]) h'';
+            exists (GetEvent ℓ0 i i0 v) Stop pc'' (m [i → v]) h'';
               exists (S t) 0 Σ''.
             splits*; try omega.
-            destruct (flowsto_dec ℓ ℓ_adv).
+            destruct (flowsto_dec ℓ0 ℓ_adv).
             - constructor; splits*.
               invert_wf_aux.
               clear IHn.
@@ -723,23 +723,23 @@ Module NI (L : Lattice) (M: Memory L).
                  (Config Stop pc (extend_memory x (ValNum t) m) h
                          (S t))
   | std_step_new:
-      forall pc m h t e e_init ℓ_p x n v l,
+      forall pc m h t e e_init ℓ_p x n v l
+        (H1: heap_lookup l h = None) (H2: size ℓ_p h + n <= maxsize ℓ_p h),
         eval m e = Some (ValNum n) ->
         eval m e_init = Some v ->
-        heap_lookup l h = None ->
-        size ℓ_p h + n <= maxsize ℓ_p h ->
         std_sem_step (Config (NewArr x ℓ_p e e_init) pc m h t)
                      (Config Stop pc
                              (extend_memory x (ValLoc l) m)
-                             (extend_heap l ℓ_p n v h) (S t))
+                             (extend_heap v l ℓ_p n h H1 H2) (S t))
   | std_step_get:
-      forall pc m h x y e l n v length t,
+      forall pc m h x y e l n v length t ℓ μ,
         memory_lookup m y = Some (ValLoc l) ->
         eval m e = Some (ValNum n) ->
         length_of l h = Some length ->
         0 <= n ->
         n < length ->
-        arr_lookup l n h = Some v ->
+        heap_lookup l h = Some (ℓ, μ) ->
+        lookup μ n = Some v ->
         std_sem_step (Config (GetArr x y e) pc m h t)
                      (Config Stop pc (extend_memory x v m) h (S t))
   | std_step_set:
@@ -1026,10 +1026,6 @@ Module NI (L : Lattice) (M: Memory L).
             super_destruct; discriminate.
           * assert (heap_lookup loc1 emptyHeap = None) by eauto 2.
             congruence.
-      - unfolds.
-        intros.
-        assert (exists n, ValLoc loc = ValNum n) by eauto 2.
-        super_destruct; discriminate.
     }
 
     assert (wellformed_aux Γ emptyStenv ⟨c, bot, m2, emptyHeap, t⟩ pc_end).
@@ -1081,10 +1077,6 @@ Module NI (L : Lattice) (M: Memory L).
             super_destruct; discriminate.
           * assert (heap_lookup loc1 emptyHeap = None) by eauto 2.
             congruence.
-      - unfolds.
-        intros.
-        assert (exists n, ValLoc loc = ValNum n) by eauto 2.
-        super_destruct; discriminate.
     }
     remember_simple (std_step_implies_step_many H H5).
     clear H5.

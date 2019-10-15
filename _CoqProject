@@ -19,3 +19,4 @@
 ./bridge.v
 ./nibridge_helper.v
 ./nibridge.v
+./ni.v
